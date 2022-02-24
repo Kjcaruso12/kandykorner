@@ -3,8 +3,17 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 
 export const EmployeeList = () => {
     const [employees, changeEmployee] = useState([])
-
     const history = useHistory()
+
+    const fireEmployee = (id) => {
+        fetch(`http://localhost:8088/employees/${id}`, {
+            method: "DELETE"
+        })
+        const copy = employees.filter(employee => {
+            return employee.id != id
+        })
+        changeEmployee(copy)
+    } 
 
     useEffect(
         () => {
@@ -26,7 +35,11 @@ export const EmployeeList = () => {
                 employees.map(
                     (employee) => {
                         return <div key={`employee--${employee.id}`}>
-                                    <p>{employee.first_name} {employee.last_name} currently works at {employee.location.name}</p>
+                                    <p>{employee.first_name} {employee.last_name} currently works at {employee.location.name}
+                                    <button onClick={() => {
+                                        fireEmployee(employee.id)
+                                        }}>Fire Employee</button>
+                                    </p>
                                 </div>
                     }
                 )
