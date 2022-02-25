@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useHistory } from "react-router-dom"
 import "./Login.css"
+import { existingRegisterUserCheck, postCustomer } from "../ApiManager"
 
 export const Register = (props) => {
     const [customer, setCustomer] = useState({})
@@ -8,23 +9,13 @@ export const Register = (props) => {
 
     const history = useHistory()
 
-    const existingUserCheck = () => {
-        return fetch(`http://localhost:8088/customers?email=${customer.email}`)
-            .then(res => res.json())
-            .then(user => !!user.length)
-    }
     const handleRegister = (e) => {
         e.preventDefault()
-        existingUserCheck()
+        existingRegisterUserCheck(customer)
+            .then(user => !!user.length)
             .then((userExists) => {
                 if (!userExists) {
-                    fetch("http://localhost:8088/customers", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(customer)
-                    })
+                    postCustomer(customer)
                         .then(res => res.json())
                         .then(createdUser => {
                             if (createdUser.hasOwnProperty("id")) {
@@ -40,7 +31,7 @@ export const Register = (props) => {
     }
 
     const updateCustomer = (evt) => {
-        const copy = {...customer}
+        const copy = { ...customer }
         copy[evt.target.id] = evt.target.value
         setCustomer(copy)
     }
@@ -58,14 +49,14 @@ export const Register = (props) => {
                 <fieldset>
                     <label htmlFor="first_name"> First Name </label>
                     <input onChange={updateCustomer}
-                           type="text" id="first_name" className="form-control"
-                           placeholder="Enter your first name" required autoFocus />
+                        type="text" id="first_name" className="form-control"
+                        placeholder="Enter your first name" required autoFocus />
                 </fieldset>
                 <fieldset>
                     <label htmlFor="last_name"> Last Name </label>
                     <input onChange={updateCustomer}
-                           type="text" id="last_name" className="form-control"
-                           placeholder="Enter your last name" required />
+                        type="text" id="last_name" className="form-control"
+                        placeholder="Enter your last name" required />
                 </fieldset>
                 <fieldset>
                     <label htmlFor="address"> Address </label>

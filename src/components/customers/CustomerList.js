@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
+import { getAllCustomers } from "../ApiManager"
 
 export const CustomerList = () => {
     const [customers, setCustomer] = useState([])
 
-    const history = useHistory()
-
     useEffect(
         () => {
-            fetch("http://localhost:8088/customers")
-                .then(res => res.json())
+            getAllCustomers()
                 .then((data) => {
                     setCustomer(data)
                 })

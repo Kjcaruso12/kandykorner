@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { getLocations, postEmployee } from "../ApiManager";
 
 
 export const EmployeeForm = () => {
@@ -14,33 +15,24 @@ export const EmployeeForm = () => {
 
     const [locations, setLocation] = useState([])
 
-    useEffect(() => {
-        return fetch("http://localhost:8088/locations")
-        .then(res => res.json())
-                .then((data) => {
-                    setLocation(data)
-        })
-    },
-    [])
+    useEffect(
+        () => {
+            getLocations()
+                .then((locations) => {
+                    setLocation(locations)
+                })
+        },
+        []
+    )
 
     const history = useHistory()
 
     const saveEmployee = (event) => {
         event.preventDefault()
-
-
-        const fetchOption = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(employees)
-        }
-
-        return fetch("http://localhost:8088/employees", fetchOption)
-        .then(() => {
-            history.push("/employees")
-        })
+        postEmployee(employees)
+            .then(() => {
+                history.push("/employees")
+            })
     }
 
     return (
@@ -56,7 +48,7 @@ export const EmployeeForm = () => {
                         placeholder="First name of employee"
                         onChange={
                             (evt) => {
-                                const copy = {...employees}
+                                const copy = { ...employees }
                                 copy.first_name = evt.target.value
                                 update(copy)
                             }
@@ -73,7 +65,7 @@ export const EmployeeForm = () => {
                         placeholder="Last name of employee"
                         onChange={
                             (evt) => {
-                                const copy = {...employees}
+                                const copy = { ...employees }
                                 copy.last_name = evt.target.value
                                 update(copy)
                             }
@@ -90,7 +82,7 @@ export const EmployeeForm = () => {
                         placeholder="Hourly rate of pay"
                         onChange={
                             (evt) => {
-                                const copy = {...employees}
+                                const copy = { ...employees }
                                 copy.hourlyRate = evt.target.value
                                 update(copy)
                             }
@@ -103,7 +95,7 @@ export const EmployeeForm = () => {
                     <input type="checkbox"
                         onChange={
                             (evt) => {
-                                const copy = {...employees}
+                                const copy = { ...employees }
                                 copy.fullTime = evt.target.checked
                                 update(copy)
                             }
@@ -116,7 +108,7 @@ export const EmployeeForm = () => {
                     <input type="checkbox"
                         onChange={
                             (evt) => {
-                                const copy = {...employees}
+                                const copy = { ...employees }
                                 copy.manager = evt.target.checked
                                 update(copy)
                             }
@@ -125,26 +117,26 @@ export const EmployeeForm = () => {
             </fieldset>
             <fieldset>
                 <div className="location_dropdown">
-                        Locations: <select 
-                                    name="location" 
-                                    id="location"
-                                    onChange={
-                                        (evt) => {
-                                            const copy = {...employees}
-                                            copy.locationId = evt.target.value
-                                            update(copy)
-                                        }
-                                    }>
-                                        <option value="0">Select a location</option>
-                                        {
-                                            locations.map(location => {
-                                                return <option 
-                                                        key={`location--${location.id}`} 
-                                                        value={location.id}
-                                                        >{location.name}</option>
-                                            })
-                                        }
-                                    </select>
+                    Locations: <select
+                        name="location"
+                        id="location"
+                        onChange={
+                            (evt) => {
+                                const copy = { ...employees }
+                                copy.locationId = evt.target.value
+                                update(copy)
+                            }
+                        }>
+                        <option value="0">Select a location</option>
+                        {
+                            locations.map(location => {
+                                return <option
+                                    key={`location--${location.id}`}
+                                    value={location.id}
+                                >{location.name}</option>
+                            })
+                        }
+                    </select>
                 </div>
             </fieldset>
             <button className="btn btn-primary" onClick={saveEmployee}>

@@ -2,21 +2,17 @@ import React, { useRef, useState } from "react"
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom"
 import "./Login.css"
+import { existingLoginUserCheck } from "../ApiManager";
 
 export const Login = () => {
     const [email, set] = useState("")
     const existDialog = useRef()
     const history = useHistory()
 
-    const existingUserCheck = () => {
-        return fetch(`http://localhost:8088/customers?email=${email}`)
-            .then(res => res.json())
-            .then(user => user.length ? user[0] : false)
-    }
-
     const handleLogin = (e) => {
         e.preventDefault()
-        existingUserCheck()
+        existingLoginUserCheck(email)
+            .then(user => user.length ? user[0] : false)
             .then(exists => {
                 if (exists) {
                     localStorage.setItem("kandy_customer", exists.id)
