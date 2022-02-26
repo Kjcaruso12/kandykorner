@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { getProducts, postPurchase } from "../ApiManager"
 
 const timeStamp = Date.now()
 
 export const ProductList = () => {
     const [products, setProducts] = useState([])
-    const [purchase, setPurchase] = useState([])
-    const history = useHistory()
 
     useEffect(
         () => {

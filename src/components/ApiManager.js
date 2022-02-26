@@ -23,7 +23,12 @@ export const getLocations = () => {
         .then(response => response.json())
 }
 
-export const getPurchases = (currentCustomer) => {
+export const getAllPurchases = () => {
+    return fetch("http://localhost:8088/purchases/?_expand=customer&_expand=product")
+        .then(response => response.json())
+}
+
+export const getCurrentPurchases = (currentCustomer) => {
     return fetch(`http://localhost:8088/purchases/?customerId=${currentCustomer}&_expand=product`)
     .then(res => res.json())
 }
